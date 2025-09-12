@@ -1,4 +1,5 @@
 import { Component } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 import AppInfo from "../app-info/app-info";
 import SearchPanel from "../search-panel/search-panel";
@@ -32,6 +33,22 @@ class App extends Component {
     });
   };
 
+  addItem = (name, salary) => {
+    const newItem = {
+      name,
+      salary,
+      increase: false,
+      id: uuidv4(),
+    };
+    this.setState(({ data }) => {
+      const oldArray = [...data];
+      const newArray = [...oldArray, newItem];
+      return {
+        data: newArray,
+      };
+    });
+  };
+
   render() {
     return (
       <div className="app">
@@ -41,7 +58,7 @@ class App extends Component {
           <AppFilter />
         </div>
         <EmployersList data={this.state.data} onDelete={this.deleteItem} />
-        <EmployersAddForm />
+        <EmployersAddForm onAdd={this.addItem} />
       </div>
     );
   }
