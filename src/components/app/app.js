@@ -24,6 +24,8 @@ class App extends Component {
         },
         { name: "Nikita E", salary: 300, increase: false, rise: false, id: 3 },
       ],
+      term: "",
+      filter: "all",
     };
   }
 
@@ -74,20 +76,55 @@ class App extends Component {
     }));
   };
 
+  searchEmp = (term, items) => {
+    if (term.length === 0) {
+      return items;
+    }
+    return items.filter((item) => {
+      return item.name.indexOf(term) > -1;
+    });
+  };
+
+  onUpdateSearch = (term) => {
+    this.setState({
+      term,
+    });
+  };
+
+  filterPost = (items, filter) => {
+    switch (filter) {
+      case "rise":
+        return items.filter((item) => item.rise === true);
+      case "salary":
+        return items.filter((item) => item.salary >= 1000);
+      default:
+        return items;
+    }
+  };
+
+  onFilterSelect = (filter) => {
+    this.setState({ filter })
+  }
+
   render() {
+    const { data, term } = this.state;
     const employers = this.state.data.length;
     const increased = this.state.data.filter(
       (item) => item.increase === true
     ).length;
+    const visibleData = this.filterPost(this.searchEmp(term, data), this.state.filter);
     return (
       <div className="app">
         <AppInfo employers={employers} increased={increased} />
         <div className="search-panel">
-          <SearchPanel />
-          <AppFilter />
+          <SearchPanel onUpdateSearch={this.onUpdateSearch} />
+          <AppFilter
+          filter={this.state.filter}
+          onFilterSelect={this.onFilterSelect}
+          />
         </div>
         <EmployersList
-          data={this.state.data}
+          data={visibleData}
           onDelete={this.deleteItem}
           onToggleProp={this.onToggleProp}
         />

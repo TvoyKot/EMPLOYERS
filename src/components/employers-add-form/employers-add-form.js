@@ -8,7 +8,6 @@ class EmployersAddForm extends Component {
       name: "",
       salary: "",
     };
-    console.log(props);
   }
   onValueChange = (event) => {
     this.setState({
